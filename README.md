@@ -1,4 +1,4 @@
-# Leaflet.Control.EditInOSM
+# Leaflet.EditInOSM
 
 This simple control provide link to edit the map current view in the OSM editors.
 
