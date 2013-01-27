@@ -2,6 +2,8 @@
 
 This simple control provide link to edit the map current view in the OSM editors.
 
+Check out the [demo](http://yohanboniface.github.com/Leaflet.EditInOSM/).
+
 Out-of-the-box supporter editors:
 - JOSM
 - iD
