@@ -4,7 +4,8 @@ L.Control.EditInOSM = L.Control.extend({
         position: "topright",
         editors: {
             JOSM: {
-                url: 'http://127.0.0.1:8111/load_and_zoom'
+                url: 'http://127.0.0.1:8111/load_and_zoom',
+                timeout: 1000
             },
             iD: {
                 url: 'http://geowiki.com/iD/#map='
@@ -52,7 +53,11 @@ L.Control.EditInOSM = L.Control.extend({
     },
 
     openRemote: function (name) {
-        window.open(this.buildURL(name));
+        var editor = this.options.editors[name];
+        var w = window.open(this.buildURL(name));
+        if (editor.timeout) {
+            setTimeout(function() {w.close();}, editor.timeout);
+        }
     },
 
     buildURL: function (name) {
