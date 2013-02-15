@@ -44,7 +44,7 @@ L.Control.EditInOSM = L.Control.extend({
         var editor = this.options.editors[name];
         var link = L.DomUtil.create('a', "osm-editor", container);
         link.href = '#';
-        link.innerHTML = editor.name || name;
+        link.innerHTML = editor.name || name;
         L.DomEvent
             .on(link, "click", L.DomEvent.stop)
             .on(link, "click", function (e) {
