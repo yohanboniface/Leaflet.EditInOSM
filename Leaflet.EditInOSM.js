@@ -8,7 +8,7 @@ L.Control.EditInOSM = L.Control.extend({
                 timeout: 1000
             },
             iD: {
-                url: 'http://geowiki.com/iD/#map='
+                url: 'http://openstreetmap.us/iD/release/#map='
             },
             potlatch: {
                 url: 'http://open.mapquestapi.com/dataedit/index_flash.html',
@@ -92,8 +92,8 @@ L.Control.EditInOSM = L.Control.extend({
     get_iD_params: function () {
         return [
             this._map.getZoom(),
-            this._map.getCenter().wrap().lat,
-            this._map.getCenter().wrap().lng
+            this._map.getCenter().wrap().lng,
+            this._map.getCenter().wrap().lat
         ].join('/');
     }
 
