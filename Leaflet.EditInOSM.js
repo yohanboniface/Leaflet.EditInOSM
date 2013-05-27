@@ -4,10 +4,11 @@ L.Control.EditInOSM = L.Control.extend({
         position: "topright",
         editors: {
             JOSM: {
-                url: 'http://127.0.0.1:8111/load_and_zoom'
+                url: 'http://127.0.0.1:8111/load_and_zoom',
+                timeout: 1000
             },
             iD: {
-                url: 'http://geowiki.com/iD/#map='
+                url: 'http://openstreetmap.us/iD/release/#map='
             },
             potlatch: {
                 url: 'http://open.mapquestapi.com/dataedit/index_flash.html',
@@ -43,7 +44,7 @@ L.Control.EditInOSM = L.Control.extend({
         var editor = this.options.editors[name];
         var link = L.DomUtil.create('a', "osm-editor", container);
         link.href = '#';
-        link.innerHTML = editor.name || name;
+        link.innerHTML = editor.name || name;
         L.DomEvent
             .on(link, "click", L.DomEvent.stop)
             .on(link, "click", function (e) {
@@ -52,7 +53,11 @@ L.Control.EditInOSM = L.Control.extend({
     },
 
     openRemote: function (name) {
-        window.open(this.buildURL(name));
+        var editor = this.options.editors[name];
+        var w = window.open(this.buildURL(name));
+        if (editor.timeout) {
+            setTimeout(function() {w.close();}, editor.timeout);
+        }
     },
 
     buildURL: function (name) {
@@ -87,8 +92,9 @@ L.Control.EditInOSM = L.Control.extend({
     get_iD_params: function () {
         return [
             this._map.getZoom(),
-            this._map.getCenter().wrap().lat,
-            this._map.getCenter().wrap().lng
+
+            this._map.getCenter().wrap().lng,
+            this._map.getCenter().wrap().lat
         ].join('/');
     }
 
