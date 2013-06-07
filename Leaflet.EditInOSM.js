@@ -2,6 +2,8 @@ L.Control.EditInOSM = L.Control.extend({
 
     options: {
         position: "topright",
+        // the minimum zoom level for which this plugin is visible
+        zoomThreshold: 0,
         editors: {
             JOSM: {
                 url: 'http://127.0.0.1:8111/load_and_zoom',
@@ -34,11 +36,29 @@ L.Control.EditInOSM = L.Control.extend({
         for (var name in this.options.editors) {
             this.addItem(container, name);
         }
+
+        this._map.on('zoomend', this._onZoomEnd, this);
+
         var link = L.DomUtil.create('a', "leaflet-control-edit-in-osm-toggle", container);
         link.href = '#';
         link.title = "Edit in OSM";
         return container;
     },
+
+
+    onRemove: function (map) {
+        map.off('zoomend', this._onZoomEnd);
+    },
+
+    _onZoomEnd: function () { 
+        var zoom = this._map.getZoom();
+        if (zoom < this.options.zoomThreshold) {
+            L.DomUtil.addClass(this._container, "leaflet-control-edit-hidden");
+        } else {
+            L.DomUtil.removeClass(this._container, "leaflet-control-edit-hidden");
+        }
+    },
+
 
     addItem: function (container, name) {
         var editor = this.options.editors[name];
