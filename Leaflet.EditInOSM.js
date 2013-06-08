@@ -14,6 +14,17 @@ L.Control.EditInOSM = L.Control.extend({
     },
 
     editors: {
+        id: {
+            url: 'http://openstreetmap.us/iD/release/#map=',
+            displayName: "iD",
+            buildURL: function (map) { 
+                return this.url + [
+                    map.getZoom(),
+                    map.getCenter().wrap().lng,
+                    map.getCenter().wrap().lat
+                ].join('/');
+            }
+        },
         josm: {
             url: 'http://127.0.0.1:8111/load_and_zoom',
             timeout: 1000,
@@ -26,17 +37,6 @@ L.Control.EditInOSM = L.Control.extend({
                     top: bounds.getNorthWest().lat,
                     bottom: bounds.getSouthEast().lat
                 });
-            }
-        },
-        id: {
-            url: 'http://openstreetmap.us/iD/release/#map=',
-            displayName: "iD",
-            buildURL: function (map) { 
-                return this.url + [
-                    map.getZoom(),
-                    map.getCenter().wrap().lng,
-                    map.getCenter().wrap().lat
-                ].join('/');
             }
         },
         potlatch: {
@@ -58,20 +58,20 @@ L.Control.EditInOSM = L.Control.extend({
 
     options: {
         position: "topright",
-        // the minimum zoom level for which this plugin is visible
         zoomThreshold: 0,
         widget: "multiButton",
         anchorText: "Edit in OSM",
         titleText: "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
-        visibleEditors: ["id", "josm", "potlatch"],
-        additionalEditors: {}
+        visibleEditors: ["id", "potlatch"],
+        availableEditors: {},
+        editor: null
     },
 
     initialize: function (options) {
         options = options || {};
         L.setOptions(this, options);
 
-        this._editors = L.Util.extend({}, this.editors, options.additionalEditors);
+        this._editors = L.Util.extend({}, this.editors, options.availableEditors);
         // The plugin will work if the user provides an editor or a list of visible Editors,
         // giving preference to the individual editor over the list
         this._editor = this.options.editor || this.options.visibleEditors[0];
@@ -106,7 +106,7 @@ L.Control.EditInOSM = L.Control.extend({
         var container = L.DomUtil.create('div', this._className),
             that = this;
 
-        container.title = this.options.titleText || this.options.anchorText;
+        container.title = this.options.titleText || this.options.anchorText || '';
 
         // create a default placeholder icon
         L.DomUtil.create('a', "leaflet-control-edit-in-osm-toggle", container);
