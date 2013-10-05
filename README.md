@@ -32,14 +32,16 @@ When you instantiate the Leaflet map, specify the `editInOSMControl: true` optio
 
 ## Control Configuration Options
 
-- position: standard for a Leaflet control. See the [Leaflet documentation](http://leafletjs.com/reference.html#control-positions).
-- zoomThreshold: An integer representing the minimum zoom level for which this control is visible.
-- widget: The UI widget that will appear for this control. Can be `attributionBox` or `multiButton`. See widgets section for more details.
-- anchorText: The text that will appear in the hyperlink when using the `attributionBox` widget. Defaults to "Edit in OSM".
-- titleText: The HTML title text for this widget when the user hovers over it.
-- visibleEditors: An array of editor names to determine which editors will appear in the UI widget. Must be the names of built-in editors or editors supplied via the `availableEditors` option. The `attributionBox` widget will only use the first visible editor.
-- editor: Instead of specifying an array of visibleEditors, a single editor name can be specified and will take preference over whatever is in the visibleEditors array.
-- availableEditors: an object with additional editor names as keys and editor objects as values. See the Editors section for more details.
+| option           | description                                                                                                                                                                                                                                        |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| position         | standard for a Leaflet control. See the [Leaflet documentation](http://leafletjs.com/reference.html#control-positions).                                                                                                                            |
+| zoomThreshold    | An integer representing the minimum zoom level for which this control is visible.                                                                                                                                                                  |
+| widget           | The UI widget that will appear for this control. Can be `attributionBox` or `multiButton`. See widgets section for more details.                                                                                                                   |
+| anchorText       | The text that will appear in the hyperlink when using the `attributionBox` widget. Defaults to "Edit in OSM".                                                                                                                                      |
+| titleText        | The HTML title text for this widget when the user hovers over it.                                                                                                                                                                                  |
+| visibleEditors   | An array of editor names to determine which editors will appear in the UI widget. Must be the names of built-in editors or editors supplied via the `availableEditors` option. The `attributionBox` widget will only use the first visible editor. |
+| editor           | Instead of specifying an array of visibleEditors, a single editor name can be specified and will take preference over whatever is in the visibleEditors array.                                                                                     |
+| availableEditors | an object with additional editor names as keys and editor objects as values. See the Editors section for more details.                                                                                                                             |
 
 ## Widgets
 
