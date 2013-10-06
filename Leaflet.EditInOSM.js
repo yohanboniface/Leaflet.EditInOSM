@@ -63,15 +63,31 @@ L.Control.EditInOSM = L.Control.extend({
         anchorText: "Edit in OSM",
         titleText: "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
         visibleEditors: ["id", "potlatch"],
-        availableEditors: {},
-        editor: null
+        editor: null,
+        additionalEditors: {},
+        overrideDefaultEditors: {}
     },
 
     initialize: function (options) {
         options = options || {};
         L.setOptions(this, options);
 
-        this._editors = L.Util.extend({}, this.editors, options.availableEditors);
+        this._editors = L.Util.extend({}, this.editors, this.options.additionalEditors);
+
+        if (this.options.overrideDefaultEditors.id) {
+            this._editors.id = L.Util.extend({}, this.editors.id,
+                                             options.overrideDefaultEditors.id);
+        }
+        if (this.options.overrideDefaultEditors.potlatch) {
+            this._editors.potlatch = L.Util.extend({}, this.editors.potlatch,
+                                                   this.options.overrideDefaultEditors.potlatch);
+        }
+
+        if (this.options.overrideDefaultEditors.josm) {
+            this._editors.josm = L.Util.extend({}, this.editors.josm,
+                                                   this.options.overrideDefaultEditors.josm);
+        }
+
         // The plugin will work if the user provides an editor or a list of visible Editors,
         // giving preference to the individual editor over the list
         this._editor = this.options.editor || this.options.visibleEditors[0];
