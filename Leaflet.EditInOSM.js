@@ -193,7 +193,7 @@ L.Control.EditInOSM = L.Control.extend({
 /////////////////////////////
 
 L.Map.addInitHook(function () {
-    if (this.options.editInOSMControl) {
+    if (this.options.editInOSMControl || this.options.editInOSMControlOptions) {
         var options = this.options.editInOSMControlOptions || {};
         this.editInOSMControl = (new L.Control.EditInOSM(options)).addTo(this);
     }
