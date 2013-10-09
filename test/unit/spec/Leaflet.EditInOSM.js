@@ -27,48 +27,30 @@ describe("Options", function() {
 
     it("Should be able to override the url on a default editor",
        function () {
-           var map = L.map('map', {
-               editInOSMControl: true,
-               editInOSMControlOptions: {
-                   overrideDefaultEditors: {
-                       id: { url: "www.example.com" }
-                   }
-               }
-           });
-           expect(map.editInOSMControl._editors.id.url).toEqual("www.example.com");
-           expect(map.editInOSMControl._editors.id.displayName).toEqual("iD");
+           var overriddenId = new L.Control.EditInOSM.Editors.Id({ url: "www.example.com" }),
+               map = L.map('map', {
+                   editInOSMControlOptions: { editors: [overriddenId, 'potlatch'] }
+               });
+           expect(map.editInOSMControl.options.editors[0].url).toEqual("www.example.com");
+           expect(map.editInOSMControl.options.editors[0].displayName).toEqual("iD");
        });
 
     it("Should be able to add an additional editor", function() {
            var map = L.map('map', {
                editInOSMControlOptions: {
-                   additionalEditors: {
-                       foo: { 
-                           url: "bar",
-                           displayName: "buz",
-                           buildURL: function () { return this.url; }
-                       }
-                   }
+                   editors: [{ url: "bar",
+                               displayName: "buz",
+                               buildUrl: function () { return this.url; }
+                             }]
                }
            });
-        expect(map.editInOSMControl._editors.foo.url).toEqual("bar");
-        expect(map.editInOSMControl._editors.foo.displayName).toEqual("buz");
+        expect(map.editInOSMControl.options.editors[0].url).toEqual("bar");
+        expect(map.editInOSMControl.options.editors[0].displayName).toEqual("buz");
     });
 
-    it("Should give precedence to editor over visibleEditors", function () {
-        var map = L.map('map', {
-            editInOSMControlOptions: {
-                editor: 'potlatch',
-                visibleEditors: ['id', 'josm']
-            }
-        });
-        expect(map.editInOSMControl._editor).toEqual('potlatch');
-        expect(map.editInOSMControl._visibleEditors).toEqual(['potlatch']);
-    });
     it("Should use defaults when neither editor nor visibleEditors are provided", function () {
-        var map = L.map('map', {editInOSMControlOptions: {} });
-        expect(map.editInOSMControl._editor).toEqual('id');
-        expect(map.editInOSMControl._visibleEditors).toEqual(['id', 'potlatch']);
-
+        var map = L.map('map');
+        expect(map.editInOSMControl.options.editors[0].displayName).toEqual('iD');
+        expect(map.editInOSMControl.options.editors[1].displayName).toEqual('P2');
     });
 });

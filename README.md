@@ -2,48 +2,42 @@
 
 This simple control provide link to edit the map current view in the OSM editors.
 
-Check out the [demo](http://yohanboniface.github.com/Leaflet.EditInOSM/).
+Check out the [demo](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/basic.html).
 
 To see some of the newer features, clone this repo and navigate to `examples/` folder in your browser.
 
 Out-of-the-box supporter editors:
-- JOSM
 - iD
 - Potlatch 2
+- JOSM
 
 ## Quickstart
 
 Add the js and css script tags to your project after leaflet:
 ```html
-<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
-<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.6/leaflet.js"></script>
 <link rel="stylesheet" href="./Leaflet.EditInOSM.css" />
 <script src="./Leaflet.EditInOSM.js"></script>
 
 ```
 
-When you instantiate the Leaflet map, specify the `editInOSMControl: true` option:
+## Control Configuration Options
+
+When you instantiate the Leaflet map, specify the `editInOSMControlOptions: {}` to customize:
 
 ```javascript
     var map = L.map('map', {
-        editInOSMControl: true,
+        editInOSMControlOptions: {},
     }).setView([48.4, -4.4], 13);
 ```
-
-## Control Configuration Options
 
 | option                   | description                                                                                                                                                                                                                                         |
 |--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | position                 | standard for a Leaflet control. See the [Leaflet documentation](http://leafletjs.com/reference.html#control-positions).                                                                                                                             |
 | zoomThreshold            | An integer representing the minimum zoom level for which this control is visible.                                                                                                                                                                   |
-| anchorText               | The text that will appear in the hyperlink when using the `attributionBox` widget. Defaults to "Edit in OSM".                                                                                                                                       |
-| titleText                | The HTML title text for this widget when the user hovers over it.                                                                                                                                                                                   |
-|                          |                                                                                                                                                                                                                                                     |
-| widget                   | The UI widget that will appear for this control. Can be `attributionBox` or `multiButton`. See widgets section for more details.                                                                                                                    |
-| editor                   | A single editor to feature in the widget. Always takes precendence over visibleEditors.                                                                                                                                                             |
-| visibleEditors           | An array of editor names to determine which editors will appear in the UI widget. Must be the names of built-in editors or editors supplied via the `additionalEditors` option. The `attributionBox` widget will only use the first visible editor. |
-| additionalEditors        | an object with additional editor names as keys and editor objects as values. See the Editors section for more details.                                                                                                                              |
-| overrideDefaultEditors   | an object to be mixed in that will override values for the default editors. See example below.                                                                                                                                      |
+| widget                   | The UI widget that will appear for this control. Can be a string value of `attributionBox` or `multiButton`. Or, can be a configured instance of a class from `L.Control.EditInOSM.Widgets`. See examples for more details.                         |
+| editors                  | An array of editors to determine which editors will appear in the UI widget. Can be string values of `id`, `potlatch` or `josm` for the built-in editors, or configured instances of `L.Control.EditInOSM.Editors`. See examples for more details.  |
 
 ## Widgets
 
@@ -60,46 +54,46 @@ In `editInOSMControlOptions` key in the map options, provide the `overrideDefaul
 
 example:
 ```javascript
-var map = L.Map('map', {
-    editInOSMControl: true,
-    editInOSMControlOptions: {
-        overrideDefaultEditors: {
-            id: { url: "http://www.example.com" }
-        }
-    }
+var overriddenId = new L.Control.EditInOSM.Editors.Id({ url: "http://www.example.com" }),
+    map = L.Map('map', {
+    editInOSMControlOptions: { editors: [overriddenId, 'potlatch'] }
 });
 ```
 
 ## Adding additional editors
 
-In `editInOSMControlOptions` key in the map options, provide the `additionalEditors` option with the necessary attributes. See the built-in editors source code for more detail. Also, override the `visibleEditors` option to include the desired editors.
+Provide an object to the `editors` option with the following properties:
+
+| property    | description                                                                                    |
+|-------------|------------------------------------------------------------------------------------------------|
+| displayName | The name to appear on the button.                                                              |
+| url         | The url prefix to pack a location onto                                                         |
+| buildUrl    | a function that takes a base url and builds it into a location-aware url using the map object. |
 
 example:
 ```javascript
-var map = L.Map('map', {
-    editInOSMControl: true,
-    editInOSMControlOptions: {
-        additionalEditors: {
-            foo: {
-               displayName: "Foo",
-               url: "http://www.example.com",
-               buildURL: function (map) {
-                    return this.url;
-                    }
-            },
-            bar: {
-               displayName: "Bar",
-               url: "http://www.example.com",
-               buildURL: function (map) {
-                    return this.url + "/example.html";
-               }
-            }
-        },
-        visibleEditors: ['id', 'foo', 'bar']
-    }
-});
+var foo = { displayName: "Foo",
+            url: "http://www.example.com",
+            buildUrl: function (map) { return this.url; }
+          },
+    bar = { displayName: "Bar",
+            url: "http://www.example.com",
+            buildUrl: function (map) { return this.url + "/example.html"; }
+          },
+    map = L.map('map', { 
+    editInOSMControlOptions: { editors: ['id', foo, bar] }
+    });
+
 ```
 
 ## Other customizations
 
-see the `examples/` folder for examples.
+Check out some examples:
+
+* [Basic](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/basic.html)
+* [Additional Editors](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/additional-editors.html)
+* [Attribution Box](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/attribution-box.html)
+* [Limiting Editors (1)](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/limit-editors-1.html)
+* [Limiting Editors (2)](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/limit-editors-2.html)
+* [Overriding Editors](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/override-editors.html)
+* [Zoom Threshold](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/zoom-threshold.html)

@@ -1,200 +1,207 @@
-L.Control.EditInOSM = L.Control.extend({
+(function (L, setTimeout) {
 
-    /////////////////////////////
-    // default objects
-    /////////////////////////////
+    var _controlContainer,
+        _map,
+        _zoomThreshold,
+        _hideClass = 'leaflet-control-edit-hidden',
+        _anchorClass = 'leaflet-control-edit-in-osm-toggle',
 
-    widgets: {
-        multiButton: {
-            className: 'leaflet-control-edit-in-osm'
-        },
-        attributionBox: {
-            className: 'leaflet-control-attribution'
-        }
-    },
+        _Widgets =  {
+            MultiButton: function (config) {
+                var className = 'leaflet-control-edit-in-osm',
+                    helpText = "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
+                    addEditors = function (container, editors) {
+                        for (var i in editors) {
+                            addEditorToWidget(container, editors[i]);
+                        }
+                    };
 
-    editors: {
-        id: {
-            url: 'http://openstreetmap.us/iD/release/#map=',
-            displayName: "iD",
-            buildURL: function (map) { 
-                return this.url + [
-                    map.getZoom(),
-                    map.getCenter().wrap().lng,
-                    map.getCenter().wrap().lat
-                ].join('/');
+                return {
+                    className: (config && config.className) || className,
+                    helpText: (config && config.helpText) || helpText,
+                    addEditors: (config && config.addEditors) || addEditors
+                };
+            },
+            AttributionBox: function (config) {
+                var className = 'leaflet-control-attribution',
+                    helpText = "Edit in OSM",
+                    addEditors = function (container, editors) {
+                        addEditorToWidget(container, editors[0], helpText);
+                    };
+
+                return {
+                    className: (config && config.className) || className,
+                    helpText: (config && config.helpText) || helpText,
+                    addEditors: (config && config.addEditors) || addEditors
+                };
             }
         },
-        josm: {
-            url: 'http://127.0.0.1:8111/load_and_zoom',
-            timeout: 1000,
-            displayName: "JOSM",
-            buildURL: function (map) { 
-                var bounds = map.getBounds();
-                return this.url + L.Util.getParamString({
-                    left: bounds.getNorthWest().lng,
-                    right: bounds.getSouthEast().lng,
-                    top: bounds.getNorthWest().lat,
-                    bottom: bounds.getSouthEast().lat
-                });
+
+        _Editors = {
+            Id: function (config) {
+                var url = 'http://openstreetmap.us/iD/release/#map=',
+                    displayName = "iD",
+                    buildUrl = function (map) {
+                        return this.url + [
+                            map.getZoom(),
+                            map.getCenter().wrap().lng,
+                            map.getCenter().wrap().lat
+                        ].join('/');
+                    };
+                return {
+                    url: (config && config.url) || url,
+                    displayName: (config && config.displayName) || displayName,
+                    buildUrl: (config && config.buildUrl) || buildUrl
+                };
+            },
+            Josm: function (config) {
+                var url = 'http://127.0.0.1:8111/load_and_zoom',
+                    timeout = 1000,
+                    displayName = "JOSM",
+                    buildUrl = function (map) {
+                        var bounds = map.getBounds();
+                        return this.url + L.Util.getParamString({
+                            left: bounds.getNorthWest().lng,
+                            right: bounds.getSouthEast().lng,
+                            top: bounds.getNorthWest().lat,
+                            bottom: bounds.getSouthEast().lat
+                        });
+                    };
+
+                return {
+                    url: (config && config.url) || url,
+                    timeout: (config && config.timeout) || timeout,
+                    displayName: (config && config.displayName) || displayName,
+                    buildUrl: (config && config.buildUrl) || buildUrl
+                };
+            },
+            Potlatch: function (config) {
+                var url = 'http://open.mapquestapi.com/dataedit/index_flash.html',
+                    displayName = "P2",
+                    buildUrl = function (map) {
+                        return this.url + L.Util.getParamString({
+                            lon: map.getCenter().wrap().lng,
+                            lat: map.getCenter().wrap().lat,
+                            zoom: map.getZoom()
+                        });
+                    };
+                return {
+                    url: (config && config.url) || url,
+                    displayName: (config && config.displayName) || displayName,
+                    buildUrl: (config && config.buildUrl) || buildUrl
+                };
             }
-        },
-        potlatch: {
-            url: 'http://open.mapquestapi.com/dataedit/index_flash.html',
-            displayName: "P2",
-            buildURL: function (map) { 
-                return this.url + L.Util.getParamString({
-                    lon: map.getCenter().wrap().lng,
-                    lat: map.getCenter().wrap().lat,
-                    zoom: map.getZoom()
-                });
-            }
-        }
-    },
-
-    /////////////////////////////
-    // config and validation
-    /////////////////////////////
-
-    options: {
-        position: "topright",
-        zoomThreshold: 0,
-        widget: "multiButton",
-        anchorText: "Edit in OSM",
-        titleText: "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
-        visibleEditors: ["id", "potlatch"],
-        editor: null,
-        additionalEditors: {},
-        overrideDefaultEditors: {}
-    },
-
-    initialize: function (options) {
-        options = options || {};
-        L.setOptions(this, options);
-
-        this._editors = L.Util.extend({}, this.editors, this.options.additionalEditors);
-
-        if (this.options.overrideDefaultEditors.id) {
-            this._editors.id = L.Util.extend({}, this.editors.id,
-                                             options.overrideDefaultEditors.id);
-        }
-        if (this.options.overrideDefaultEditors.potlatch) {
-            this._editors.potlatch = L.Util.extend({}, this.editors.potlatch,
-                                                   this.options.overrideDefaultEditors.potlatch);
-        }
-
-        if (this.options.overrideDefaultEditors.josm) {
-            this._editors.josm = L.Util.extend({}, this.editors.josm,
-                                                   this.options.overrideDefaultEditors.josm);
-        }
-
-        // The plugin will work if the user provides an editor or a list of visible Editors,
-        // giving preference to the individual editor over the list
-        this._editor = this.options.editor || this.options.visibleEditors[0];
-        this._visibleEditors = (this.options.editor ? [this.options.editor] : null) || this.options.visibleEditors;
-
-        this._className = this.widgets[this.options.widget].className;
-    },
+        };
 
 
-    /////////////////////////////
-    // framework methods
-    /////////////////////////////
-
-    onAdd: function (map) {
-        this._map = map;
-        this._map.on('zoomend', this._onZoomEnd, this);
-        return this.render();
-    },
-
-    onRemove: function (map) {
-        map.off('zoomend', this._onZoomEnd);
-    },
-
-    /////////////////////////////
-    // UI methods
-    /////////////////////////////
-
-    render: function () {
-        /*
-         Build the UI widget for this plugin
-         */
-        var container = L.DomUtil.create('div', this._className),
-            that = this;
-
-        container.title = this.options.titleText || this.options.anchorText || '';
-
-        // create a default placeholder icon
-        L.DomUtil.create('a', "leaflet-control-edit-in-osm-toggle", container);
-
-        // add clickable button for each editor
-        // to be displayed on hover
-
-        if (this.options.widget === "attributionBox") {
-            this.addEditorToWidget(container, this._editors[this._editor], this.options.anchorText);
-        } else if (this.options.widget === "multiButton") {
-            for (var i in this._visibleEditors) {
-                (function () {
-                    var name = that._visibleEditors[i],
-                        editor = that._editors[name];
-                    that.addEditorToWidget(container, editor);
-                }());
-            }
-        }
-        return container;
-    },
-
-    addEditorToWidget: function (widgetContainer, editor, linkText) {
-        var editorWidget = L.DomUtil.create('a', "osm-editor", widgetContainer);
-        editorWidget.href = "#";
-        editorWidget.innerHTML = linkText || editor.displayName;
-        L.DomEvent
-            .on(editorWidget, "click", L.DomEvent.stop)
-            .on(editorWidget, "click", function (e) {
-                this.openRemote(editor);
-            }, this);
-           
-    },
-
-    _onZoomEnd: function showOrHideUI() {
-        /*
-        Make the EditInOSM widget visible or invisible after each
-        zoom event.
-        
-        configurable by setting the *zoomThreshold* option.
-        */
-        var zoom = this._map.getZoom();
-        if (zoom < this.options.zoomThreshold) {
-            L.DomUtil.addClass(this._container, "leaflet-control-edit-hidden");
-        } else {
-            L.DomUtil.removeClass(this._container, "leaflet-control-edit-hidden");
-        }
-    },
-
-    /////////////////////////////
-    // API methods
-    /////////////////////////////
-
-    openRemote: function (editor) {
-        /*
-         Takes an editor, calls their buildURL method
-         and opens the url in the browser
-         */
-        var url = editor.buildURL(this._map),
+    // Takes an editor, calls their buildUrl method
+    // and opens the url in the browser
+    function openRemote (editor) {
+        var url = editor.buildUrl(_map),
             w = window.open(url);
         if (editor.timeout) {
             setTimeout(function() {w.close();}, editor.timeout);
         }
     }
-});
 
-/////////////////////////////
-// initialization hook
-/////////////////////////////
+    function addEditorToWidget(widgetContainer, editor, text) {
+        var editorWidget = L.DomUtil.create('a', "osm-editor", widgetContainer);
+        editorWidget.href = "#";
+        editorWidget.innerHTML = text || editor.displayName;
+        L.DomEvent.on(editorWidget, "click", function (e) {
+            openRemote(editor);
+            L.DomEvent.stop(e);
+        });
+    }
 
-L.Map.addInitHook(function () {
-    if (this.options.editInOSMControl || this.options.editInOSMControlOptions) {
+    // Make the EditInOSM widget visible or invisible after each
+    // zoom event.
+    //
+    // configurable by setting the *zoomThreshold* option.
+    function showOrHideUI() {
+        var zoom = _map.getZoom();
+        if (zoom < _zoomThreshold) {
+            L.DomUtil.addClass(_controlContainer, _hideClass);
+        } else {
+            L.DomUtil.removeClass(_controlContainer, _hideClass);
+        }
+    }
+
+    L.Control.EditInOSM = L.Control.extend({
+
+        options: {
+            position: "topright",
+            zoomThreshold: 0,
+            widget: "multiButton",
+            editors: ["id", "potlatch"]
+        },
+
+        initialize: function (options) {
+            var newEditors = [],
+                widget,
+                widgetSmallName,
+                editor,
+                editorSmallName;
+
+            L.setOptions(this, options);
+
+            _zoomThreshold = this.options.zoomThreshold;
+
+            widget = this.options.widget;
+            widgetSmallName = typeof(widget) === 'string' ? widget.toLowerCase() : '';
+
+            // setup widget from string or object
+            if (widgetSmallName === "multibutton") {
+                this.options.widget = new _Widgets.MultiButton();
+            } else if (widgetSmallName === "attributionbox") {
+                this.options.widget = new _Widgets.AttributionBox();
+            }
+
+            // setup editors from strings or objects
+            for (var i in this.options.editors) {
+                editor = this.options.editors[i],
+                editorSmallName = typeof(editor) === "string" ? editor.toLowerCase() : null;
+
+                if (editorSmallName === "id") {
+                    newEditors.push(new _Editors.Id());
+                } else if (editorSmallName === "josm") {
+                    newEditors.push(new _Editors.Josm());
+                } else if (editorSmallName === "potlatch") {
+                    newEditors.push(new _Editors.Potlatch());
+                } else {
+                    newEditors.push(editor);
+                }
+            }
+            this.options.editors = newEditors;
+
+        },
+
+        onAdd: function (map) {
+            _map = map;
+            map.on('zoomend', showOrHideUI);
+
+            _controlContainer = L.DomUtil.create('div', this.options.widget.className);
+
+            _controlContainer.title = this.options.widget.helpText || '';
+
+            L.DomUtil.create('a', _anchorClass, _controlContainer);
+
+            this.options.widget.addEditors(_controlContainer, this.options.editors);
+            return _controlContainer;
+        },
+
+        onRemove: function (map) {
+            map.off('zoomend', this._onZoomEnd);
+        }
+
+    });
+
+    L.Control.EditInOSM.Widgets = _Widgets;
+    L.Control.EditInOSM.Editors = _Editors;
+
+    L.Map.addInitHook(function () {
         var options = this.options.editInOSMControlOptions || {};
         this.editInOSMControl = (new L.Control.EditInOSM(options)).addTo(this);
-    }
-});
+    });
+
+})(L, setTimeout);

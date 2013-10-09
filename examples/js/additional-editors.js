@@ -1,25 +1,15 @@
-var map = L.map('map', { 
-    editInOSMControl: true,
-    editInOSMControlOptions: {
-        additionalEditors: {
-            foo: {
-                displayName: "Foo",
-                url: "http://www.example.com",
-                buildURL: function (map) {
-                    return this.url;
-                }
-            },
-            bar: {
-                displayName: "Bar",
-                url: "http://www.example.com",
-                buildURL: function (map) {
-                    return this.url + "/example.html";
-                }
-            }
-        },
-        visibleEditors: ['id', 'foo', 'bar']
-    }
-});
+var id = new L.Control.EditInOSM.Editors.Id(),
+    foo = { displayName: "Foo",
+            url: "http://www.example.com",
+            buildUrl: function (map) { return this.url; }
+          },
+    bar = { displayName: "Bar",
+            url: "http://www.example.com",
+            buildUrl: function (map) { return this.url + "/example.html"; }
+          },
+    map = L.map('map', { 
+    editInOSMControlOptions: { editors: [id, foo, bar] }
+    });
 
 map.setView([48.4, -4.4], 13);
 

@@ -1,12 +1,9 @@
-var map = L.map('map', 
-                { 
-                    editInOSMControl: true,
-                    editInOSMControlOptions: 
-                    { widget: 'multiButton',
-                      visibleEditors: ['id']
-                    }
-                }
-               );
+var map = L.map('map', { 
+    editInOSMControlOptions: { 
+        widget: 'multiButton',
+        editors: ['id']
+    }
+});
 map.setView([48.4, -4.4], 13);
 
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
