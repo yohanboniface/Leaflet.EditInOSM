@@ -38,3 +38,6 @@ a.osm-editor:hover {
     display: none;
 }
 
+.leaflet-control-edit-hidden {
+    display: none;
+}
