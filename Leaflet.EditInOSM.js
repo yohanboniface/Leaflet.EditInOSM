@@ -133,7 +133,7 @@
             position: "topright",
             zoomThreshold: 0,
             widget: "multiButton",
-            editors: ["id", "potlatch"]
+            editors: ["id", "josm"]
         },
 
         initialize: function (options) {
