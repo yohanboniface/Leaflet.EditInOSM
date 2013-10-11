@@ -200,8 +200,10 @@
     L.Control.EditInOSM.Editors = _Editors;
 
     L.Map.addInitHook(function () {
-        var options = this.options.editInOSMControlOptions || {};
-        this.editInOSMControl = (new L.Control.EditInOSM(options)).addTo(this);
+        if (this.options.editInOSMControlOptions) {
+            var options = this.options.editInOSMControlOptions || {};
+            this.editInOSMControl = (new L.Control.EditInOSM(options)).addTo(this);
+        }
     });
 
 })(L, setTimeout);
