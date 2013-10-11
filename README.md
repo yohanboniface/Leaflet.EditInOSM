@@ -50,7 +50,7 @@ A small hyperlink, styled like an attribution box typically found in the bottom-
 
 ## Overriding the URL of an existing editor
 
-In `editInOSMControlOptions` key in the map options, provide the `overrideDefaultEditors` option with the desired overrides.
+In `editInOSMControlOptions` key in the map options, provide the `editors` option with the desired overrides.
 
 example:
 ```javascript
