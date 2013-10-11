@@ -51,6 +51,6 @@ describe("Options", function() {
     it("Should use defaults when neither editor nor visibleEditors are provided", function () {
         var map = L.map('map');
         expect(map.editInOSMControl.options.editors[0].displayName).toEqual('iD');
-        expect(map.editInOSMControl.options.editors[1].displayName).toEqual('P2');
+        expect(map.editInOSMControl.options.editors[1].displayName).toEqual('JOSM');
     });
 });
