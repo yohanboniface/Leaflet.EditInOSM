@@ -4,7 +4,7 @@ This simple control provide link to edit the map current view in the OSM editors
 
 Check out the [demo](http://yohanboniface.github.com/Leaflet.EditInOSM/examples/basic.html).
 
-To see some of the newer features, clone this repo and navigate to `examples/` folder in your browser.
+To see some of the newer features, see the Examples section below.
 
 Out-of-the-box supporter editors:
 - iD
@@ -22,15 +22,15 @@ Add the js and css script tags to your project after leaflet:
 
 ```
 
-## Control Configuration Options
-
-When you instantiate the Leaflet map, specify the `editInOSMControlOptions: {}` to customize:
+When you instantiate the Leaflet map, specify the `editInOSMControlOptions` option to activate the control:
 
 ```javascript
     var map = L.map('map', {
         editInOSMControlOptions: {},
-    }).setView([48.4, -4.4], 13);
+    });
 ```
+
+## Control Configuration Options
 
 | option                   | description                                                                                                                                                                                                                                         |
 |--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
