@@ -152,9 +152,9 @@
 
             // setup widget from string or object
             if (widgetSmallName === "multibutton") {
-                this.options.widget = new _Widgets.MultiButton();
+                this.options.widget = new _Widgets.MultiButton(this.options.widgetOptions);
             } else if (widgetSmallName === "attributionbox") {
-                this.options.widget = new _Widgets.AttributionBox();
+                this.options.widget = new _Widgets.AttributionBox(this.options.widgetOptions);
             }
 
             // setup editors from strings or objects
