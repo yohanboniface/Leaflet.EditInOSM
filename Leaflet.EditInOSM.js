@@ -44,8 +44,8 @@
                     buildUrl = function (map) {
                         return this.url + [
                             map.getZoom(),
-                            map.getCenter().wrap().lng,
-                            map.getCenter().wrap().lat
+                            map.getCenter().wrap().lat,
+                            map.getCenter().wrap().lng
                         ].join('/');
                     };
                 return {
