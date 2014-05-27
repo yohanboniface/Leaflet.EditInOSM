@@ -1,0 +1,30 @@
+{
+  "name": "Leaflet.EditInOSM",
+  "version": "0.1.0",
+  "description": "Add a control in a Leaflet map with links to main OSM editors",
+  "main": "Leaflet.EditInOSM.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yohanboniface/Leaflet.EditInOSM.git"
+  },
+  "keywords": [
+    "leaflet",
+    "osm"
+  ],
+  "author": "Yohan Boniface <yb@enix.org>",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/yohanboniface/Leaflet.EditInOSM/issues"
+  },
+  "homepage": "https://github.com/yohanboniface/Leaflet.EditInOSM",
+  "dependencies": {
+    "leaflet": "^0.7.3"
+  }
+}
