@@ -1,5 +1,21 @@
-(function (L, setTimeout) {
-
+(function (factory) {
+    var L;
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['leaflet'], function(L) {
+            factory(L, setTimeout);
+        });
+    } else if (typeof module !== 'undefined') {
+        // Node/CommonJS
+        L = require('leaflet');
+        module.exports = factory(L, setTimeout);
+    } else {
+        // Browser globals
+        if (typeof window.L === 'undefined')
+            throw 'Leaflet must be loaded first';
+        factory(window.L, setTimeout);
+    }
+}(function (L, setTimeout) {
     var _controlContainer,
         _map,
         _zoomThreshold,
@@ -206,4 +222,4 @@
         }
     });
 
-})(L, setTimeout);
+}));

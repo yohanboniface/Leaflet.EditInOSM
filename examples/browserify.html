@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="../Leaflet.EditInOSM.css" />
+</head>
+<body>
+    <div id="map" style="width: 600px; height: 400px"></div>
+    <script src="js/_browserify.js"></script>
+    <script>
+        if (!window.L) {
+            alert('Please run\n\n' +
+                'npm install && browserify examples/js/browserify.js >examples/js/_browserify.js\n\n' +
+                'before loading this example.');
+        }
+    </script>
+</body>
+</html>
