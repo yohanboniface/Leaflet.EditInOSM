@@ -1,5 +1,5 @@
 {
-  "name": "Leaflet.EditInOSM",
+  "name": "leaflet-editinosm",
   "version": "0.1.0",
   "description": "Add a control in a Leaflet map with links to main OSM editors",
   "main": "Leaflet.EditInOSM.js",
@@ -16,7 +16,9 @@
   },
   "keywords": [
     "leaflet",
-    "osm"
+    "osm",
+    "map",
+    "openstreetmap"
   ],
   "author": "Yohan Boniface <yb@enix.org>",
   "license": "WTFPL",
