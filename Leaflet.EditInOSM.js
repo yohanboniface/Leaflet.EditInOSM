@@ -23,6 +23,19 @@
         _anchorClass = 'leaflet-control-edit-in-osm-toggle',
 
         _Widgets =  {
+            SimpleButton: function (config) {
+                var className = (config && config.className) || 'leaflet-control-edit-in-osm-simple',
+                    helpText = config && config.helpText,
+                    addEditors = (config && config.addEditors) || function (container, editors) {
+                        addEditorToWidget(container, editors[0], helpText);
+                    };
+
+                return {
+                    className: className,
+                    helpText: helpText,
+                    addEditors: addEditors
+                };
+            },
             MultiButton: function (config) {
                 var className = 'leaflet-control-edit-in-osm',
                     helpText = "Open this map extent in a map editor to provide more accurate data to OpenStreetMap",
@@ -167,7 +180,9 @@
             widgetSmallName = typeof(widget) === 'string' ? widget.toLowerCase() : '';
 
             // setup widget from string or object
-            if (widgetSmallName === "multibutton") {
+            if (widgetSmallName === "simplebutton") {
+                this.options.widget = new _Widgets.SimpleButton(this.options.widgetOptions);
+            } else if (widgetSmallName === "multibutton") {
                 this.options.widget = new _Widgets.MultiButton(this.options.widgetOptions);
             } else if (widgetSmallName === "attributionbox") {
                 this.options.widget = new _Widgets.AttributionBox(this.options.widgetOptions);
