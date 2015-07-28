@@ -1,0 +1,26 @@
+{
+  "name": "leaflet-editinosm",
+  "main": "Leaflet.EditInOSM.js",
+  "version": "0.2.1",
+  "homepage": "https://github.com/yohanboniface/Leaflet.EditInOSM",
+  "authors": [
+    "Yohan Boniface <hi@yohanboniface.me>"
+  ],
+  "description": "A leaflet plugin that adds a button to edit the current map extent in OSM (JOSM or iD)",
+  "keywords": [
+    "openstreetmap",
+    "leaflet"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet-dist": "0.7.x"
+  }
+}
