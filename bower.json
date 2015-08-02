@@ -11,7 +11,7 @@
     "openstreetmap",
     "leaflet"
   ],
-  "license": "MIT",
+  "license": "WTFPL",
   "ignore": [
     "**/.*",
     "node_modules",
