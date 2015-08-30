@@ -222,7 +222,7 @@
         },
 
         onRemove: function (map) {
-            map.off('zoomend', this._onZoomEnd);
+            map.off('zoomend', showOrHideUI);
         }
 
     });
