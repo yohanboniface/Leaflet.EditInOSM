@@ -1,6 +1,6 @@
 {
   "name": "leaflet-editinosm",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Add a control in a Leaflet map with links to main OSM editors",
   "main": "Leaflet.EditInOSM.js",
   "directories": {
@@ -25,8 +25,5 @@
   "bugs": {
     "url": "https://github.com/yohanboniface/Leaflet.EditInOSM/issues"
   },
-  "homepage": "https://github.com/yohanboniface/Leaflet.EditInOSM",
-  "peerDependencies": {
-    "leaflet": "^0.7.3"
-  }
+  "homepage": "https://github.com/yohanboniface/Leaflet.EditInOSM"
 }
