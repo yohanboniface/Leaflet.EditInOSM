@@ -90,10 +90,10 @@
                     buildUrl = function (map) {
                         var bounds = map.getBounds();
                         return this.url + L.Util.getParamString({
-                            left: bounds.getNorthWest().lng,
-                            right: bounds.getSouthEast().lng,
-                            top: bounds.getNorthWest().lat,
-                            bottom: bounds.getSouthEast().lat
+                            left: bounds.getNorthWest().wrap().lng,
+                            right: bounds.getSouthEast().wrap().lng,
+                            top: bounds.getNorthWest().wrap().lat,
+                            bottom: bounds.getSouthEast().wrap().lat
                         });
                     };
 
